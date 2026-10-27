@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SoCal El Niño Sea Level Outlook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="author" content="Yang Chen and Claude">
+<link rel="icon" href="data:,">
+<meta name="description" content="How a near-record 2026–27 El Niño could raise sea level and winter high water along the Southern California coast, from every tide-gauge record back to 1906 and the latest NOAA El Niño forecast.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: a single reading column (68ch) for the story, widening to 1160px for figures;
+   a sticky control row scopes every chart below it. Same design system as the companion rain site. */
+:root {
+  --paper: #f3f6f7;
+  --surface: #fcfdfd;
+  --ink: #0f1d26;
+  --ink-2: #3f4f59;
+  --muted: #5f6d76;
+  --rule: #dbe3e7;
+  --axis: #b5c1c7;
+  --wash: #e7edf0;
+  --fc: #0f8a6a;         /* 2026–27 projection (teal) */
+  --fc-text: #0b7a5e;
+  --fc-wash: rgba(15, 138, 106, 0.16);
+  --fc-wash-2: rgba(15, 138, 106, 0.30);
+  --c-lnS: #1c5cab;      /* ENSO categories: La Niña blues ... El Niño reds */
+  --c-lnW: #6da7ec;
+  --c-neu: #9aa3a8;
+  --c-enWM: #f4928a;
+  --c-enS: #e34948;
+  --c-enVS: #a0292a;
+  --sst-c2: #0d366b;     /* diverging ramp: low to high */
+  --sst-c1: #5598e7;
+  --sst-w1: #f4928a;
+  --sst-w2: #8f1d1d;
+  --div-mid: #eef1f2;
+  --tide: #7d8b93;       /* astronomical tide */
+  --bg: #d38b2a;         /* background sea level (monthly) */
+  --surge: #6a51a3;      /* short-lived surge */
+  --flood: #c2410c;      /* flood thresholds */
+  --land: #d9dfe2;
+  --sea: #eaf1f4;
+  --shadow: 0 1px 2px rgba(15, 29, 38, 0.06), 0 8px 24px rgba(15, 29, 38, 0.06);
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --maxw: 1160px;
+  --textw: 68ch;
+  --step--1: 0.84rem;
+  --step-0: 1.06rem;
+  --step-1: 1.3rem;
+  --step-2: 1.7rem;
+  --step-3: clamp(2rem, 1.4rem + 2.4vw, 3.15rem);
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e151a; --surface: #131b21; --ink: #e6edf0; --ink-2: #b4c1c8; --muted: #8d9aa2;
+    --rule: #24313a; --axis: #3a4952; --wash: #1a252c;
+    --fc: #2a9d8f; --fc-text: #4cc2a3; --fc-wash: rgba(42, 157, 143, 0.20); --fc-wash-2: rgba(42, 157, 143, 0.36);
+    --c-lnS: #8cbaf7; --c-lnW: #3067b8; --c-neu: #6b7378; --c-enWM: #a03f3c; --c-enS: #e15955; --c-enVS: #fb9890;
+    --sst-c2: #9ec5f4; --sst-c1: #2a6fc9; --sst-w1: #b8463f; --sst-w2: #ffb4a8; --div-mid: #26313a;
+    --tide: #8e9ba3; --bg: #e3a14a; --surge: #a08bd6; --flood: #f08a5d;
+    --land: #2b363e; --sea: #17222a;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0e151a; --surface: #131b21; --ink: #e6edf0; --ink-2: #b4c1c8; --muted: #8d9aa2;
+  --rule: #24313a; --axis: #3a4952; --wash: #1a252c;
+  --fc: #2a9d8f; --fc-text: #4cc2a3; --fc-wash: rgba(42, 157, 143, 0.20); --fc-wash-2: rgba(42, 157, 143, 0.36);
+  --c-lnS: #8cbaf7; --c-lnW: #3067b8; --c-neu: #6b7378; --c-enWM: #a03f3c; --c-enS: #e15955; --c-enVS: #fb9890;
+  --sst-c2: #9ec5f4; --sst-c1: #2a6fc9; --sst-w1: #b8463f; --sst-w2: #ffb4a8; --div-mid: #26313a;
+  --tide: #8e9ba3; --bg: #e3a14a; --surge: #a08bd6; --flood: #f08a5d;
+  --land: #2b363e; --sea: #17222a;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 96px; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--font-body); font-size: var(--step-0); line-height: 1.6; font-optical-sizing: auto;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--paper);
+}
+.wrap {
+  max-width: var(--maxw); margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.text { max-width: var(--textw); }
+a { color: var(--fc-text); text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--fc); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; color: var(--ink); }
+h1 { font-size: var(--step-3); font-weight: 800; font-stretch: 112%; line-height: 1.06; letter-spacing: -0.012em; }
+h2 { font-size: var(--step-2); font-weight: 760; font-stretch: 108%; line-height: 1.15; letter-spacing: -0.005em; }
+h3 { font-size: var(--step-1); font-weight: 700; font-stretch: 100%; line-height: 1.25; }
+p { margin: 0; }
+.eyebrow {
+  font-family: var(--font-mono); font-size: 0.74rem; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted);
+}
+.lede { font-size: 1.2rem; line-height: 1.55; color: var(--ink-2); max-width: 62ch; }
+.small { font-size: var(--step--1); color: var(--muted); }
+.num { font-family: var(--font-display); font-variant-numeric: tabular-nums; }
+abbr[title] { text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
+
+/* ---------- hero ---------- */
+.hero { padding-block: 40px 28px; }
+.hero .wrap { display: grid; gap: 22px; }
+.hero .stamp { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); }
+.byline { font-family: var(--font-display); font-size: 1rem; color: var(--ink-2); }
+.byline strong { color: var(--ink); font-weight: 700; }
+.stripes-fig { margin: 6px 0 0; display: grid; gap: 8px; }
+.stripes-fig figcaption { font-size: var(--step--1); color: var(--muted); max-width: 84ch; }
+#stripes { width: 100%; min-height: 140px; }
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 6px; }
+.tile {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
+  padding: 14px 16px 16px; display: grid; gap: 4px; align-content: start; min-width: 0;
+}
+.tile .label { font-family: var(--font-display); font-size: 0.86rem; font-weight: 600; color: var(--ink-2); }
+.tile .value { font-family: var(--font-display); font-size: 2.05rem; font-weight: 750; font-stretch: 110%; line-height: 1.1; color: var(--ink); }
+.tile .note { font-size: 0.86rem; line-height: 1.45; color: var(--muted); }
+.tile.fc { border-color: var(--fc); box-shadow: inset 0 0 0 1px var(--fc); }
+.tile.fc .value { color: var(--fc-text); }
+.companion { font-family: var(--font-display); font-size: 0.92rem; color: var(--ink-2); }
+
+/* ---------- sticky controls ---------- */
+.controls-band {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: saturate(1.2) blur(8px); -webkit-backdrop-filter: saturate(1.2) blur(8px);
+  border-block: 1px solid var(--rule);
+}
+.controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: end; padding-block: 10px; font-family: var(--font-display); }
+.ctl { display: grid; gap: 3px; min-width: 0; }
+.ctl label, .ctl .lab { font-size: 0.74rem; font-weight: 600; color: var(--muted); letter-spacing: 0.02em; }
+.ctl select {
+  font: 600 0.95rem var(--font-display); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--axis); border-radius: 8px; padding: 6px 30px 6px 10px; min-height: 36px;
+  appearance: none; -webkit-appearance: none; max-width: 100%;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-2) 50%), linear-gradient(135deg, var(--ink-2) 50%, transparent 50%);
+  background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%; background-size: 5px 5px; background-repeat: no-repeat;
+}
+.range-row { display: flex; align-items: center; gap: 10px; min-height: 36px; }
+.range-row output {
+  font: 700 1rem var(--font-display); font-variant-numeric: tabular-nums; color: var(--fc-text);
+  min-width: 5.6em; white-space: nowrap;
+}
+input[type="range"] { width: 190px; max-width: 46vw; accent-color: var(--fc); height: 28px; margin: 0; }
+.ctl-wide input[type="range"] { width: 230px; }
+.btn {
+  font: 600 0.88rem var(--font-display); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--axis); border-radius: 999px; padding: 7px 14px; cursor: pointer; min-height: 36px;
+}
+.btn:hover { border-color: var(--ink-2); }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--axis); border-radius: 20px; padding: 2px; background: var(--surface); }
+.seg button {
+  font: 600 0.84rem var(--font-display); color: var(--ink-2); background: transparent; border: 0;
+  padding: 6px 12px; border-radius: 999px; cursor: pointer; min-height: 32px;
+}
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.seg button:disabled { opacity: 0.4; cursor: not-allowed; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font: 600 0.8rem var(--font-display); color: var(--ink-2); background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 999px; padding: 4px 10px; cursor: pointer;
+}
+.chip:hover { border-color: var(--fc); color: var(--fc-text); }
+
+/* ---------- sections ---------- */
+main section { padding-block: 56px 8px; }
+.sec-head { display: grid; gap: 10px; margin-bottom: 22px; }
+.sec-head p { color: var(--ink-2); }
+figure { margin: 0; }
+.fig {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
+  padding: 18px 18px 14px; display: grid; gap: 10px; min-width: 0; align-content: start;
+}
+.fig > * { min-width: 0; }   /* let wide tables scroll inside their figure instead of widening it */
+.fig > .seg, .fig > .opts { justify-self: start; }
+.fig-head { display: grid; gap: 4px; }
+.fig-title { font-family: var(--font-display); font-size: 1.04rem; font-weight: 700; color: var(--ink); }
+.fig-sub { font-size: 0.9rem; line-height: 1.45; color: var(--muted); max-width: 90ch; }
+.fig-foot { font-size: 0.84rem; line-height: 1.45; color: var(--muted); }
+.chart { width: 100%; min-width: 0; position: relative; }
+.chart svg { display: block; overflow: visible; }
+.chart text { font-family: var(--font-display); fill: var(--muted); }
+.grid-2 { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 16px; }
+.grid-2r { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr); gap: 16px; }
+.grid-2e { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.stack { display: grid; gap: 16px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font: 500 0.8rem var(--font-display); color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; flex: none; }
+.legend i.bar { border-radius: 2px; }
+.legend i.line { width: 16px; height: 3px; border-radius: 2px; }
+.legend i.dash { width: 16px; height: 0; border-top: 2px dashed; border-radius: 0; }
+.legend i.band { width: 16px; height: 10px; border-radius: 2px; }
+.legend i.ring { background: transparent; border: 2px solid var(--ink-2); }
+
+/* outlook */
+.opts { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: end; }
+.verdict {
+  font-family: var(--font-body); font-size: 1.22rem; line-height: 1.5; color: var(--ink);
+  max-width: 72ch; border-left: 3px solid var(--fc); padding-left: 16px;
+}
+.big3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.big3 > div { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 2px; min-width: 0; }
+.big3 .k { font: 600 0.84rem var(--font-display); color: var(--ink-2); }
+.big3 .v { font: 760 1.9rem/1.1 var(--font-display); font-stretch: 110%; color: var(--ink); }
+.big3 .v small { font-size: 0.95rem; font-weight: 600; color: var(--muted); font-stretch: 100%; }
+.big3 .s { font-size: 0.86rem; color: var(--muted); }
+.big3 .main .v { color: var(--fc-text); }
+.meters { display: grid; gap: 14px; }
+.meter { display: grid; grid-template-columns: minmax(0, 1fr) 56px; gap: 4px 12px; align-items: center; }
+.meter .ml { grid-column: 1 / -1; font: 600 0.9rem var(--font-display); color: var(--ink-2); }
+.meter .track { position: relative; height: 12px; background: var(--wash); border-radius: 999px; }
+.meter .fill { position: absolute; inset: 0 auto 0 0; background: var(--fc); border-radius: 999px; }
+.meter .clim { position: absolute; top: -5px; width: 2px; height: 22px; background: var(--ink); border-radius: 1px; }
+.meter .mv { font: 750 1.1rem var(--font-display); color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.meter .mn { grid-column: 1 / -1; font-size: 0.82rem; color: var(--muted); }
+.note-line { font-size: 0.88rem; color: var(--muted); }
+
+table { border-collapse: collapse; width: 100%; font-family: var(--font-display); font-size: 0.88rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 650; color: var(--ink-2); font-size: 0.8rem; letter-spacing: 0.01em; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.nw { white-space: nowrap; }
+tr.main td { background: var(--fc-wash); }
+tr.sel td { background: var(--fc-wash); }
+#sens td:first-child { min-width: 14em; }
+.tscroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tscroll.tall { max-height: 460px; overflow-y: auto; }
+.pill {
+  display: inline-block; font: 650 0.76rem var(--font-display); padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--axis); color: var(--ink-2); white-space: nowrap;
+}
+.pill.in { border-color: var(--fc); color: var(--fc-text); }
+.pill.hi { border-color: var(--c-enS); color: var(--ink); background: color-mix(in srgb, var(--c-enS) 16%, transparent); }
+.pill.lo { border-color: var(--c-lnW); color: var(--ink); background: color-mix(in srgb, var(--c-lnW) 18%, transparent); }
+.pill.flood { border-color: var(--flood); color: var(--ink); background: color-mix(in srgb, var(--flood) 18%, transparent); }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.cbar { display: flex; height: 10px; border-radius: 3px; overflow: hidden; min-width: 90px; background: var(--wash); }
+.cbar span { display: block; height: 100%; }
+details { border-top: 1px solid var(--rule); padding-top: 8px; }
+summary { cursor: pointer; font: 600 0.88rem var(--font-display); color: var(--ink-2); }
+details .tscroll { max-height: 420px; overflow-y: auto; margin-top: 8px; }
+.callout {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
+  padding: 16px 18px; display: grid; gap: 6px; max-width: var(--textw);
+}
+.callout strong { font-family: var(--font-display); }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.card h3 { font-size: 1.08rem; }
+.card p { font-size: 0.98rem; color: var(--ink-2); }
+.defs { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 14px 24px; }
+.defs dt { font: 700 0.95rem var(--font-display); color: var(--ink); }
+.defs dd { margin: 0; color: var(--ink-2); font-size: 0.98rem; }
+.refs { padding-left: 1.4em; display: grid; gap: 8px; font-size: 0.92rem; color: var(--ink-2); }
+.refs li { padding-left: 4px; }
+.files { display: grid; gap: 4px; font-size: 0.92rem; }
+code { font-family: var(--font-mono); font-size: 0.86em; background: var(--wash); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 16px; font: 600 0.84rem var(--font-display); }
+.toc a { color: var(--ink-2); text-decoration: none; }
+.toc a:hover { color: var(--fc-text); text-decoration: underline; }
+footer { padding-block: 48px 64px; margin-top: 48px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.9rem; }
+footer .wrap { display: grid; gap: 8px; }
+
+/* tooltip */
+.tip {
+  position: fixed; left: 0; top: 0; z-index: 50; pointer-events: none;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: 8px;
+  box-shadow: var(--shadow); padding: 8px 10px; font: 500 0.82rem/1.4 var(--font-display);
+  max-width: 300px; display: grid; gap: 2px;
+}
+.tip .tip-title { font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.tip .tip-row { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+.tip .tip-row strong { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+.tip .tip-key { width: 12px; height: 3px; border-radius: 2px; flex: none; }
+
+.alt-wrap { position: relative; }
+#alt-canvas { width: 100%; display: block; border-radius: 6px; }
+.map-legend { display: flex; align-items: center; gap: 8px; font: 500 0.78rem var(--font-display); color: var(--muted); flex-wrap: wrap; }
+.map-legend canvas { width: 220px; max-width: 60vw; height: 10px; border-radius: 3px; }
+
+@media (max-width: 960px) {
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid-2, .grid-2e, .grid-2r { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .controls-band { position: static; backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--paper); }
+  html { scroll-padding-top: 16px; }
+  .big3 { grid-template-columns: minmax(0, 1fr); }
+  .cards { grid-template-columns: minmax(0, 1fr); }
+  .defs { grid-template-columns: minmax(0, 1fr); gap: 4px 0; }
+  .defs dd { margin-bottom: 12px; }
+  .fig { padding: 14px 12px 12px; }
+  input[type="range"], .ctl-wide input[type="range"] { width: 100%; max-width: none; }
+  .ctl, .ctl-wide { flex: 1 1 100%; }
+  .range-row { width: 100%; }
+}
+@media (max-width: 460px) {
+  .tiles { grid-template-columns: minmax(0, 1fr); }
+  .tile .value { font-size: 1.8rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .meter .fill { transition: width 220ms ease; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Southern California coast · Winter 2026–27</p>
+    <h1>A near-record El Niño is building. How high will the sea stand on the Southern California coast?</h1>
+    <p class="lede">When a strong El Niño takes hold, the ocean along Southern California runs several inches higher than normal for months. That extra height rides on top of every tide, so winter king tides and storm waves reach farther up beaches, harbors and low-lying streets.<span id="lede-now"></span> This page brings together every tide-gauge record we could find for the region, back to 1906, and sets them beside NOAA's October 2026 El Niño forecast.</p>
+    <p class="byline">By <strong>Yang Chen</strong> and <strong>Claude</strong></p>
+    <p class="stamp" id="stamp">Tide-gauge data through late October 2026 (October preliminary) · NOAA El Niño outlook issued October 8, 2026</p>
+    <figure class="stripes-fig">
+      <div id="stripes" class="chart" aria-label="El Niño and La Niña strength each winter since 1906, with winter sea level at the selected gauge drawn on top"></div>
+      <figcaption id="stripes-cap">Each stripe is one winter's El Niño–La Niña state (November–January relative Niño‑3.4 index). Red stripes are El Niño winters and blue stripes are La Niña winters; the last stripe is NOAA's forecast for this winter. The line is winter sea level at the selected gauge, after removing the seasonal cycle and the long-term rise.</figcaption>
+    </figure>
+    <div class="tiles" id="tiles">
+      <div class="tile">
+        <span class="label" id="t-now-label">Sea level now</span>
+        <span class="value" id="t-now">–</span>
+        <span class="note" id="t-now-note">–</span>
+      </div>
+      <div class="tile">
+        <span class="label">NOAA forecast for Nov–Jan</span>
+        <span class="value" id="t-fc">+2.65 °C</span>
+        <span class="note">Relative Niño‑3.4 index (RONI). 90% range +2.0 to +3.3. The strongest since 1950 was +2.36, in 1982–83.</span>
+      </div>
+      <div class="tile">
+        <span class="label" id="t-rec-label">Highest winter on record</span>
+        <span class="value" id="t-rec">–</span>
+        <span class="note" id="t-rec-note">–</span>
+      </div>
+      <div class="tile fc">
+        <span class="label" id="t-proj-label">Projected this winter</span>
+        <span class="value" id="t-proj">–</span>
+        <span class="note" id="t-proj-note">–</span>
+      </div>
+    </div>
+    <p class="companion">Companion page on rain: <a href="https://ychenzgithub.github.io/ScalElNino/" target="_blank" rel="noopener">SoCal El Niño Rain Outlook</a>.</p>
+    <nav class="toc" aria-label="Sections">
+      <a href="#outlook">Outlook</a><a href="#king">King tides</a><a href="#history">History</a><a href="#event">This El Niño</a>
+      <a href="#timing">Timing and extremes</a><a href="#coast">Along the coast</a><a href="#cases">Case files</a>
+      <a href="#caveats">Caveats</a><a href="#ready">Be ready</a><a href="#methods">Methods</a><a href="#refs">References</a>
+    </nav>
+  </div>
+</header>
+
+<div class="controls-band">
+  <form class="wrap controls" id="controls" aria-label="Chart settings" onsubmit="return false">
+    <div class="ctl">
+      <label for="gauge">Tide gauge</label>
+      <select id="gauge"></select>
+    </div>
+    <div class="ctl">
+      <label for="measure">What to look at</label>
+      <select id="measure"></select>
+    </div>
+    <div class="ctl ctl-wide">
+      <label for="mu">El Niño strength, Nov–Jan (<abbr title="Relative Oceanic Niño Index, NOAA's official El Niño index">RONI</abbr>)</label>
+      <div class="range-row">
+        <input type="range" id="mu" min="0.5" max="3.8" step="0.05" value="2.65" aria-describedby="mu-out">
+        <output id="mu-out" for="mu">+2.65 °C</output>
+      </div>
+    </div>
+    <div class="ctl">
+      <label for="sigma">Forecast uncertainty</label>
+      <div class="range-row">
+        <input type="range" id="sigma" min="0" max="0.8" step="0.05" value="0.4" aria-describedby="sigma-out">
+        <output id="sigma-out" for="sigma">± 0.40 °C</output>
+      </div>
+    </div>
+    <div class="ctl">
+      <span class="lab" id="lab-units">Units</span>
+      <div class="seg" role="group" aria-labelledby="lab-units" id="seg-units">
+        <button type="button" data-v="in" aria-pressed="true">inches, feet</button>
+        <button type="button" data-v="cm" aria-pressed="false">cm, m</button>
+      </div>
+    </div>
+    <button type="button" class="btn" id="reset">Use NOAA forecast</button>
+  </form>
+</div>
+
+<main>
+  <!-- ======================= OUTLOOK ======================= -->
+  <section id="outlook">
+    <div class="wrap stack">
+      <div class="sec-head text">
+        <p class="eyebrow">Outlook</p>
+        <h2>Your sea level outlook for winter 2026–27</h2>
+        <p>Pick a tide gauge and a measure above. The projection starts from NOAA's forecast of how strong El Niño will be, including its uncertainty, and the link between El Niño and sea level at that gauge in past winters. “Normal” means the level expected for that time of year once the long-term rise in sea level is taken out.</p>
+      </div>
+
+      <figure class="fig">
+        <div class="fig-head">
+          <span class="fig-title">How strong will it get?</span>
+          <span class="fig-sub">November–January average of NOAA's relative Niño‑3.4 index (°C). The teal curve is the forecast range used on this page. Ticks mark past El Niño winters; select one to use its strength.</span>
+        </div>
+        <div id="ruler" class="chart"></div>
+        <div class="chips" id="presets" aria-label="Strength presets"></div>
+        <div class="opts">
+          <div class="ctl">
+            <span class="lab" id="lab-period">Years used to learn from history</span>
+            <div class="seg" role="group" aria-labelledby="lab-period" id="seg-period">
+              <button type="button" data-v="modern" aria-pressed="true">Since 1951 (official index)</button>
+              <button type="button" data-v="long" aria-pressed="false">Full record</button>
+            </div>
+          </div>
+          <div class="ctl">
+            <span class="lab" id="lab-fall">What the projection uses</span>
+            <div class="seg" role="group" aria-labelledby="lab-fall" id="seg-fall">
+              <button type="button" data-v="1" aria-pressed="true">El Niño forecast plus this fall's sea level</button>
+              <button type="button" data-v="0" aria-pressed="false">El Niño forecast only</button>
+            </div>
+          </div>
+          <div class="ctl">
+            <span class="lab" id="lab-extrap">If El Niño is stronger than any on record</span>
+            <div class="seg" role="group" aria-labelledby="lab-extrap" id="seg-extrap">
+              <button type="button" data-v="continue" aria-pressed="true">Trend continues</button>
+              <button type="button" data-v="hold" aria-pressed="false">No extra rise</button>
+            </div>
+          </div>
+        </div>
+      </figure>
+
+      <p class="verdict" id="verdict" aria-live="polite"></p>
+
+      <div class="big3">
+        <div class="main"><span class="k">Middle estimate</span><span class="v" id="b-med">–</span><span class="s" id="b-med-s"></span></div>
+        <div><span class="k">Likely range (middle 50%)</span><span class="v" id="b-iqr">–</span><span class="s" id="b-iqr-s"></span></div>
+        <div><span class="k">8‑in‑10 range</span><span class="v" id="b-80">–</span><span class="s" id="b-80-s"></span></div>
+      </div>
+
+      <div class="grid-2">
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title">Where 2026–27 could land among past winters</span>
+            <span class="fig-sub" id="rank-sub"></span>
+          </div>
+          <div class="legend" id="cat-legend-1"></div>
+          <div id="ranked" class="chart"></div>
+        </figure>
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title">Odds compared with a typical winter</span>
+            <span class="fig-sub">Projected chance for 2026–27 (teal bar) and how often it happened in past winters (black tick).</span>
+          </div>
+          <div class="meters" id="meters"></div>
+          <p class="note-line" id="noaa-htf" hidden></p>
+        </figure>
+      </div>
+
+      <div class="grid-2e">
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title">How much do our choices matter?</span>
+            <span class="fig-sub">The same El Niño strength and uncertainty run through other reasonable choices, plus the raw history of strong El Niño winters.</span>
+          </div>
+          <div class="tscroll"><table id="sens"></table></div>
+        </figure>
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title">How the odds shift</span>
+            <span class="fig-sub">Likelihood of each value: the 2026–27 projection versus every past winter.</span>
+          </div>
+          <div class="legend">
+            <span><i class="band" style="background:var(--fc-wash-2);box-shadow:inset 0 2px 0 var(--fc)"></i>2026–27 projection</span>
+            <span><i class="band" style="background:var(--wash);box-shadow:inset 0 2px 0 var(--ink-2)"></i>All past winters</span>
+          </div>
+          <div id="density" class="chart"></div>
+        </figure>
+      </div>
+      <p class="small text">These are statistical projections from the historical relationship, not an official forecast. NOAA's tide tables do not include El Niño or the rise in sea level since 1983–2001; for official water level forecasts and coastal flood warnings, follow NOAA and the National Weather Service.</p>
+    </div>
+  </section>
+
+  <!-- ======================= KING TIDES ======================= -->
+  <section id="king">
+    <div class="wrap stack">
+      <div class="sec-head text">
+        <p class="eyebrow">King tides</p>
+        <h2>This winter's highest tides, with El Niño on top</h2>
+        <p id="king-intro">Tide tables are calculated from the average sea level of 1983–2001. Since then the sea has risen, and this winter El Niño is likely to lift it further. Both add to every high tide in the table.</p>
+      </div>
+      <figure class="fig">
+        <div class="fig-head">
+          <span class="fig-title" id="king-title">Daily highest tide, November 2026 to March 2027</span>
+          <span class="fig-sub" id="king-sub"></span>
+        </div>
+        <div class="legend" id="king-legend"></div>
+        <div id="king-chart" class="chart"></div>
+        <details open>
+          <summary>The highest tides of the winter</summary>
+          <div class="tscroll"><table id="king-table"></table></div>
+        </details>
+        <p class="fig-foot" id="king-foot"></p>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ======================= HISTORY ======================= -->
+  <section id="history">
+    <div class="wrap stack">
+      <div class="sec-head text">
+        <p class="eyebrow">History</p>
+        <h2>What 120 years of tide gauges show</h2>
+        <p>Tide gauges in Southern California have recorded the height of the sea every hour since 1906 in San Diego and since the 1920s in La Jolla and Los Angeles. In El Niño winters the readings run high month after month. Unlike rainfall, which El Niño only nudges, sea level follows it closely: the stronger the El Niño, the higher the winter sea, with few exceptions.</p>
+      </div>
+      <div class="grid-2r">
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title">Every tide gauge on record</span>
+            <span class="fig-sub">Gauges operated by NOAA and partners since 1906. Larger dots have longer records; filled dots are still running. Select a dot to use that gauge.</span>
+          </div>
+          <div id="gmap" class="chart"></div>
+        </figure>
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title">The inventory</span>
+            <span class="fig-sub" id="inv-sub"></span>
+          </div>
+          <div class="tscroll tall"><table id="inv-table"></table></div>
+        </figure>
+      </div>
+      <figure class="fig">
+        <div class="fig-head">
+          <span class="fig-title" id="scatter-title">Sea level versus El Niño strength</span>
+          <span class="fig-sub" id="scatter-sub"></span>
+        </div>
+        <div class="legend" id="cat-legend-2"></div>
+        <div id="scatter" class="chart"></div>
+        <p class="fig-foot">Gray bands: the range the model expects at each strength (darker: middle 50%, lighter: 8 in 10). Teal band: this winter's forecast strength. Hollow dots: winters before 1951, when the El Niño index is reconstructed from sparser ship observations.</p>
+      </figure>
+      <div class="grid-2e">
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title">By El Niño–La Niña category</span>
+            <span class="fig-sub" id="cats-sub"></span>
+          </div>
+          <div id="cats" class="chart"></div>
+        </figure>
+        <div class="callout" id="takeaway" style="align-self:start"></div>
+      </div>
+      <figure class="fig">
+        <div class="fig-head">
+          <span class="fig-title">Winter by winter</span>
+          <span class="fig-sub" id="ts-sub"></span>
+        </div>
+        <div id="ts" class="chart"></div>
+        <details>
+          <summary>Show every winter as a table</summary>
+          <div class="tscroll"><table id="season-table"></table></div>
+        </details>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ======================= THIS EVENT ======================= -->
+  <section id="event">
+    <div class="wrap stack">
+      <div class="sec-head text">
+        <p class="eyebrow">This El Niño</p>
+        <h2>2026 against the giants</h2>
+        <p id="event-intro">In the very strong El Niños of 1982–83 and 1997–98, Southern California's sea level began climbing in late summer or fall and stayed high through spring. The question for this winter is whether 2026 follows the same path.</p>
+      </div>
+      <figure class="fig">
+        <div class="fig-head">
+          <span class="fig-title" id="traj-title">Sea level, month by month</span>
+          <span class="fig-sub" id="traj-sub"></span>
+        </div>
+        <div class="legend" id="traj-legend"></div>
+        <div id="traj" class="chart"></div>
+      </figure>
+      <figure class="fig">
+        <div class="fig-head">
+          <span class="fig-title">Where the sea is high</span>
+          <span class="fig-sub">Sea surface height measured by satellites, compared with the 1993–2009 average for the same month. El Niño shows up as a ridge of high water along the equator that spreads north and south along the coast of the Americas.</span>
+        </div>
+        <div class="opts">
+          <div class="seg" role="group" aria-label="Month" id="seg-alt"></div>
+          <div class="seg" role="group" aria-label="Anomaly type" id="seg-altrel">
+            <button type="button" data-v="0" aria-pressed="true">Compared with 1993–2009</button>
+            <button type="button" data-v="1" aria-pressed="false">Minus the map-wide rise</button>
+          </div>
+        </div>
+        <div class="alt-wrap chart"><canvas id="alt-canvas" role="img" aria-label="Map of sea surface height anomalies in the eastern Pacific"></canvas></div>
+        <div class="map-legend"><span id="alt-lo">−30 cm</span><canvas id="alt-legend" width="220" height="10"></canvas><span id="alt-hi">+30 cm</span><span id="alt-cap"></span></div>
+        <p class="fig-foot" id="alt-foot">Satellite altimetry began in late 1992, so 1982–83 is not available. October 1997 and January 1998: AVISO gridded altimetry. 2015 onward: NOAA CoastWatch blended near-real-time product, with the same seasonal cycle removed. Altimetry is less reliable within about 20 km of the coast, which is where tide gauges take over.</p>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ======================= TIMING ======================= -->
+  <section id="timing">
+    <div class="wrap stack">
+      <div class="sec-head text">
+        <p class="eyebrow">Timing and extremes</p>
+        <h2>When the water runs highest, and why</h2>
+        <p>El Niño lifts Southern California's sea level from late summer into spring, with the peak usually between November and January. The very highest water levels come when a raised sea lines up with the year's biggest tides, in winter or early summer, sometimes with a storm surge on top.</p>
+      </div>
+      <div class="grid-2e">
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title">Average sea level by month</span>
+            <span class="fig-sub" id="monthly-sub"></span>
+          </div>
+          <div class="legend" id="monthly-legend"></div>
+          <div id="monthly" class="chart"></div>
+        </figure>
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title">The sea follows the tropics</span>
+            <span class="fig-sub" id="lag-sub"></span>
+          </div>
+          <div id="lag" class="chart"></div>
+          <p class="fig-foot">The signal arrives two ways. Ocean waves trapped against the coast carry high water north from the equator within weeks, and El Niño's stronger winter storms push water toward the shore with southerly winds and lower air pressure [11, 12, 15, 16].</p>
+        </figure>
+      </div>
+      <div class="grid-2e">
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title">Highest water of each winter</span>
+            <span class="fig-sub" id="ext-sub"></span>
+          </div>
+          <div id="ext1" class="chart"></div>
+          <div id="ext2" class="chart"></div>
+        </figure>
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title" id="top-title">The highest water levels on record</span>
+            <span class="fig-sub" id="top-sub"></span>
+          </div>
+          <div class="seg" role="group" aria-label="Ranking" id="seg-top">
+            <button type="button" data-v="obs" aria-pressed="true">As measured</button>
+            <button type="button" data-v="adj" aria-pressed="false">At 2026–27 sea level</button>
+          </div>
+          <div class="legend">
+            <span><i class="bar" style="background:var(--tide)"></i>Tide</span>
+            <span><i class="bar" style="background:var(--bg)"></i>Higher sea that month</span>
+            <span><i class="bar" style="background:var(--surge)"></i>Storm surge, hours</span>
+          </div>
+          <div class="tscroll"><table id="top-table"></table></div>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= COAST ======================= -->
+  <section id="coast">
+    <div class="wrap stack">
+      <div class="sec-head text">
+        <p class="eyebrow">Along the coast</p>
+        <h2>El Niño's high water travels up the coast</h2>
+        <p>Southern California sits in the middle of a coastline that feels El Niño from Chile to Alaska. Tide gauges in Peru and Ecuador rise first, often by late spring, and the high water spreads north along Mexico and California over the following months as one ocean wave after another travels up the coast. Farther north, in Oregon, Washington and Alaska, El Niño's winter storms push the sea even higher than in Southern California.</p>
+      </div>
+      <div class="grid-2r">
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title">Winter sea level in strong El Niños</span>
+            <span class="fig-sub">Average December–February sea level in strong and very strong El Niño winters (relative index +1.5 °C or more), 1951–2026, after removing the long-term rise. Each dot is a tide gauge.</span>
+          </div>
+          <div id="pmap" class="chart"></div>
+          <div class="map-legend"><span id="pmap-lo">0</span><canvas id="pmap-legend" width="220" height="10"></canvas><span id="pmap-hi"></span></div>
+        </figure>
+        <figure class="fig">
+          <div class="fig-head">
+            <span class="fig-title" id="hov-title">Month by month, south to north</span>
+            <span class="fig-sub">Monthly sea level at each gauge compared with normal, from January of the El Niño year to the following June. Rows run along the coast from Chile (bottom) to Alaska (top).</span>
+          </div>
+          <div class="seg" role="group" aria-label="Event" id="seg-hov"></div>
+          <div id="hov" class="chart"></div>
+          <div class="map-legend"><span id="hov-lo"></span><canvas id="hov-legend" width="220" height="10"></canvas><span id="hov-hi"></span></div>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= CASE FILES ======================= -->
+  <section id="cases">
+    <div class="wrap stack">
+      <div class="sec-head text">
+        <p class="eyebrow">Case files</p>
+        <h2>Every strong El Niño, and what this method would have said</h2>
+        <p>For each past strong El Niño, we refit the model without that winter, then asked what it would have predicted from El Niño strength alone. This is a fair test, because the model never saw the answer.</p>
+      </div>
+      <figure class="fig">
+        <div class="fig-head">
+          <span class="fig-title" id="cases-title">Strong El Niño winters</span>
+          <span class="fig-sub" id="cases-sub"></span>
+        </div>
+        <div class="tscroll"><table id="cases-table"></table></div>
+        <p class="fig-foot" id="cases-foot"></p>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ======================= CAVEATS ======================= -->
+  <section id="caveats">
+    <div class="wrap stack">
+      <div class="sec-head text">
+        <p class="eyebrow">Caveats</p>
+        <h2>What these numbers do and don't tell you</h2>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <h3>El Niño raises the stage; tides and storms decide the flooding</h3>
+          <p>A winter sea a few inches above normal causes no harm by itself. The trouble comes when it coincides with the year's highest tides, a storm surge and large waves. The seasonal numbers here shift the odds of those moments; they cannot say which day they will happen.</p>
+        </div>
+        <div class="card">
+          <h3>Today's baseline is higher</h3>
+          <p id="cav-rise">Sea level along the coast has risen since 1983 and 1998, so the same El Niño boost now lands on a higher starting point. The “at 2026–27 sea level” figures on this page add that rise back in; tide tables do not.</p>
+        </div>
+        <div class="card">
+          <h3>This event may go beyond the record</h3>
+          <p>NOAA gives 70–83% odds of an El Niño stronger than any since 1950. No statistical method can know how the sea responds beyond what has been observed. The “If El Niño is stronger than any on record” switch shows how much the answer depends on that assumption.</p>
+        </div>
+        <div class="card">
+          <h3>Waves are not in these numbers</h3>
+          <p>Tide gauges sit in harbors and on piers, where they measure the still-water level and filter out waves. On open beaches, waves running up the shore can add several feet more. Much of the damage in the 1982–83 and 2015–16 El Niños came from waves and erosion on top of high water [7, 8, 9].</p>
+        </div>
+        <div class="card">
+          <h3>Not every El Niño lifts the sea the same way</h3>
+          <p id="cav-spread">The sea level response depends on how much of El Niño's warm water reaches the coast through the ocean, and how stormy the winter is. Spring sea levels, the North Pacific's state and the local winds all add their own variation.</p>
+        </div>
+        <div class="card">
+          <h3>A gauge measures the sea relative to the land</h3>
+          <p id="cav-land">Tide gauges record relative sea level, so sinking or rising land shows up as sea level change. Terminal Island in Long Beach sank several meters as oil was pumped from beneath it in the mid-1900s. This analysis removes each gauge's long-term trend, which takes out slow land motion but keeps the year-to-year swings that El Niño causes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= READY ======================= -->
+  <section id="ready">
+    <div class="wrap stack">
+      <div class="sec-head text">
+        <p class="eyebrow">Be ready</p>
+        <h2>What a high-water El Niño winter can bring</h2>
+        <p>Most high-water days are a nuisance: a flooded parking lot or a closed coastal road at the top of the tide. A few, when a storm arrives on a king tide, cause real damage.</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <h3>High tide flooding</h3>
+          <p>Low-lying harbor and beach neighborhoods can see salt water in streets and storm drains near the peak of king tides, even on sunny days. Check the tide tables for the dates in the King tides section, and watch for NWS coastal flood advisories.</p>
+        </div>
+        <div class="card">
+          <h3>Beach erosion and cliff collapse</h3>
+          <p>Higher water lets waves reach farther up the beach and strip away sand. In the 2015–16 El Niño winter, beach erosion along the West Coast was far above normal, and at many beaches it was the largest ever measured [8]. In Southern California, cliffs eroded where beaches thinned [9].</p>
+        </div>
+        <div class="card">
+          <h3>Harbors, piers and coastal roads</h3>
+          <p>The strongest El Niño winters, 1982–83 and 1997–98, brought some of the most damaging coastal erosion on record around the Pacific [7]. Boats, docks, piers and seawalls take the brunt when surge and waves arrive at high tide.</p>
+        </div>
+        <div class="card">
+          <h3>Where to get forecasts and warnings</h3>
+          <p>NOAA <a href="https://tidesandcurrents.noaa.gov/" target="_blank" rel="noopener">Tides &amp; Currents</a> (live water levels and tide predictions); NWS <a href="https://www.weather.gov/lox/" target="_blank" rel="noopener">Los Angeles/Oxnard</a> and <a href="https://www.weather.gov/sgx/" target="_blank" rel="noopener">San Diego</a> (coastal flood advisories); <a href="https://cdip.ucsd.edu/" target="_blank" rel="noopener">CDIP wave forecasts</a> (Scripps); NOAA's <a href="https://tidesandcurrents.noaa.gov/high-tide-flooding/annual-outlook.html" target="_blank" rel="noopener">high tide flooding outlook</a>; the <a href="https://www.coastal.ca.gov/kingtides/" target="_blank" rel="noopener">California King Tides Project</a>; and USGS CoSMoS coastal flood maps on <a href="https://ourcoastourfuture.org/" target="_blank" rel="noopener">Our Coast, Our Future</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= METHODS ======================= -->
+  <section id="methods">
+    <div class="wrap stack">
+      <div class="sec-head text">
+        <p class="eyebrow">Methods</p>
+        <h2>Data and methods</h2>
+      </div>
+      <dl class="defs">
+        <dt>Tide gauges</dt>
+        <dd>Monthly mean sea level, hourly water levels and hourly tide predictions from NOAA CO-OPS for every Southern California station with a usable record [17]: San Diego (1906–), La Jolla (1924–), Los Angeles (1923–), Santa Monica (1933–), Santa Barbara (1973–), and the retired Newport Beach, Long Beach (Terminal Island), Rincon Island and Platform Harvest gauges. Ensenada, Mexico (1956–1990) comes from the Permanent Service for Mean Sea Level [18]. Gauges along the rest of the Pacific coast come from NOAA CO-OPS (United States) and the University of Hawaii Sea Level Center (other countries) [19]. October 2026 is estimated from NOAA's preliminary 6‑minute data through October 25: the month's average predicted tide plus the average difference between observed and predicted water so far.</dd>
+        <dt>Normal and anomalies</dt>
+        <dd>For each gauge we remove the average seasonal cycle and a slowly rising baseline: a straight-line fit through the surrounding <span data-bind="win">19</span> years, the length of a National Tidal Datum Epoch. Near the start and end of a record, the 19-year window is shifted rather than shortened, so the baseline for 2026–27 is the trend of the last 19 years. Before fitting the baseline, the part of each month explained by El Niño is removed, so that big events do not pull the baseline up. What remains is the sea level anomaly. The regional average is the mean anomaly of the five long-running gauges reporting that month.</dd>
+        <dt>Highest water</dt>
+        <dd>The highest hourly water level of each November–March, above Mean Higher High Water (MHHW, 1983–2001 epoch), adjusted to 2026–27 sea level by adding the rise in the baseline between that winter and January 2027 (for retired gauges, the rise after the gauge closed is taken from the nearest running gauge). Flood thresholds are NOAA's derived minor, moderate and major high tide flooding levels [20]. The components in the top-10 table split each event into the predicted tide, that month's average difference between observed and predicted water, and the remainder (storm surge over hours to days).</dd>
+        <dt>El Niño index and forecast</dt>
+        <dd>NOAA's Relative Oceanic Niño Index (RONI), official since February 2026 [1, 4], averaged over November–January as each winter's El Niño strength. Before 1950 we rebuilt the same index from ERSSTv5 [5]; it matches the official index with r = <span data-bind="recon-r">0.992</span>. The forecast is NOAA CPC's October 2026 RONI outlook [2]: November–January median +2.65 °C, 5–95% range +2.00 to +3.31 °C, approximated as a normal distribution with a spread of 0.40 °C.</dd>
+        <dt>Statistical model</dt>
+        <dd>For each gauge and measure, a linear regression with separate El Niño and La Niña slopes: mean = b<sub>0</sub> + b<sub>LN</sub>·min(x, 0) + b<sub>EN</sub>·max(x, 0), where x is the November–January RONI, with normally distributed scatter that is allowed to be larger in El Niño winters (x ≥ 0.5). Fitted by maximum likelihood. Each projection combines the El Niño forecast, <span data-bind="nboot">150</span> bootstrap refits and the scatter, in 20,000 Monte Carlo draws that your browser runs each time a setting changes.</dd>
+        <dt>Validation</dt>
+        <dd id="val-text">Leave-one-out cross-validation compares the model with a climatology that ignores El Niño, using the continuous ranked probability score [21].</dd>
+        <dt>Satellite maps</dt>
+        <dd>AVISO monthly absolute dynamic topography (1993–2009) and NOAA CoastWatch's blended near-real-time sea level anomaly (2015 onward), both via NOAA ERDDAP and subsampled to 1° [22, 23]. Anomalies are relative to the 1993–2009 AVISO average for each month.</dd>
+        <dt>Limitations</dt>
+        <dd>Few very strong El Niños exist to learn from, and this one may exceed them all. Monthly and seasonal averages say nothing about the timing of individual storms. Gauges measure relative sea level in harbors and do not capture waves. The model ignores the El Niño's spatial pattern, the state of the North Pacific and how the season starts. It is an independent statistical analysis, not an official forecast.</dd>
+        <dt>Files</dt>
+        <dd class="files">
+          <span>Data used by this page: <a href="data/sl_data.js"><code>data/sl_data.js</code></a>, <a href="data/sl_geo.js"><code>data/sl_geo.js</code></a></span>
+          <span>Tables: <a href="data/seasonal_sea_level_enso.csv"><code>seasonal_sea_level_enso.csv</code></a>, <a href="data/monthly_sea_level_anomalies.csv"><code>monthly_sea_level_anomalies.csv</code></a>, <a href="data/model_projection_summary.csv"><code>model_projection_summary.csv</code></a>, <a href="data/king_tides_2026_27.csv"><code>king_tides_2026_27.csv</code></a>, <a href="data/gauge_inventory.csv"><code>gauge_inventory.csv</code></a>, <a href="data/pacific_coast_enso_sensitivity.csv"><code>pacific_coast_enso_sensitivity.csv</code></a>, <a href="data/enso_ndj_index.csv"><code>enso_ndj_index.csv</code></a>, <a href="data/cpc_roni_outlook_oct2026.csv"><code>cpc_roni_outlook_oct2026.csv</code></a></span>
+          <span>Code that builds them: <a href="analysis/download_raw.py"><code>analysis/download_raw.py</code></a>, <a href="analysis/build_site_data.py"><code>analysis/build_site_data.py</code></a></span>
+          <span>Source code and data on GitHub: <a href="https://github.com/ychenzgithub/ScalSeaLevel" target="_blank" rel="noopener">github.com/ychenzgithub/ScalSeaLevel</a></span>
+        </dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ======================= REFERENCES ======================= -->
+  <section id="refs">
+    <div class="wrap stack">
+      <div class="sec-head text">
+        <p class="eyebrow">References</p>
+        <h2>Sources</h2>
+      </div>
+      <ol class="refs">
+        <li>NOAA Climate Prediction Center (2026). ENSO Diagnostic Discussion, October 8, 2026. <a href="https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml" target="_blank" rel="noopener">cpc.ncep.noaa.gov</a></li>
+        <li>NOAA Climate Prediction Center (2026). Official Relative Oceanic Niño Index (RONI) outlook and ENSO strength probabilities, October 2026. <a href="https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/" target="_blank" rel="noopener">cpc.ncep.noaa.gov/…/enso/roni</a></li>
+        <li>NOAA Climate Prediction Center. RONI, ONI and weekly Niño indices. <a href="https://www.cpc.ncep.noaa.gov/data/indices/" target="_blank" rel="noopener">cpc.ncep.noaa.gov/data/indices</a></li>
+        <li>L'Heureux, M. L., et al. (2024). A relative sea surface temperature index for classifying ENSO events in a changing climate. <i>Journal of Climate</i>, 37, 1197–1211. <a href="https://doi.org/10.1175/JCLI-D-23-0406.1" target="_blank" rel="noopener">doi:10.1175/JCLI-D-23-0406.1</a></li>
+        <li>Huang, B., et al. (2017). Extended Reconstructed Sea Surface Temperature, Version 5 (ERSSTv5). <i>Journal of Climate</i>, 30, 8179–8205. <a href="https://doi.org/10.1175/JCLI-D-16-0836.1" target="_blank" rel="noopener">doi:10.1175/JCLI-D-16-0836.1</a></li>
+        <li>Hamlington, B. D., et al. (2015). The effect of the El Niño‐Southern Oscillation on U.S. regional and coastal sea level. <i>Journal of Geophysical Research: Oceans</i>, 120, 3970–3986. <a href="https://doi.org/10.1002/2014JC010602" target="_blank" rel="noopener">doi:10.1002/2014JC010602</a></li>
+        <li>Barnard, P. L., et al. (2015). Coastal vulnerability across the Pacific dominated by El Niño/Southern Oscillation. <i>Nature Geoscience</i>, 8, 801–807. <a href="https://doi.org/10.1038/ngeo2539" target="_blank" rel="noopener">doi:10.1038/ngeo2539</a></li>
+        <li>Barnard, P. L., et al. (2017). Extreme oceanographic forcing and coastal response due to the 2015–2016 El Niño. <i>Nature Communications</i>, 8, 14365. <a href="https://doi.org/10.1038/ncomms14365" target="_blank" rel="noopener">doi:10.1038/ncomms14365</a></li>
+        <li>Young, A. P., et al. (2018). Southern California coastal response to the 2015–2016 El Niño. <i>Journal of Geophysical Research: Earth Surface</i>, 123, 3069–3083. <a href="https://doi.org/10.1029/2018JF004771" target="_blank" rel="noopener">doi:10.1029/2018JF004771</a></li>
+        <li>Bromirski, P. D., Flick, R. E., &amp; Cayan, D. R. (2003). Storminess variability along the California coast: 1858–2000. <i>Journal of Climate</i>, 16, 982–993. <a href="https://doi.org/10.1175/1520-0442(2003)016%3C0982:SVATCC%3E2.0.CO;2" target="_blank" rel="noopener">doi:10.1175/1520-0442(2003)016&lt;0982:SVATCC&gt;2.0.CO;2</a></li>
+        <li>Enfield, D. B., &amp; Allen, J. S. (1980). On the structure and dynamics of monthly mean sea level anomalies along the Pacific coast of North and South America. <i>Journal of Physical Oceanography</i>, 10, 557–578. <a href="https://doi.org/10.1175/1520-0485(1980)010%3C0557:OTSADO%3E2.0.CO;2" target="_blank" rel="noopener">doi:10.1175/1520-0485(1980)010&lt;0557:OTSADO&gt;2.0.CO;2</a></li>
+        <li>Chelton, D. B., &amp; Davis, R. E. (1982). Monthly mean sea-level variability along the west coast of North America. <i>Journal of Physical Oceanography</i>, 12, 757–784. <a href="https://doi.org/10.1175/1520-0485(1982)012%3C0757:MMSLVA%3E2.0.CO;2" target="_blank" rel="noopener">doi:10.1175/1520-0485(1982)012&lt;0757:MMSLVA&gt;2.0.CO;2</a></li>
+        <li>Ryan, H. F., &amp; Noble, M. (2002). Sea level response to ENSO along the central California coast: how the 1997–1998 event compares with the historic record. <i>Progress in Oceanography</i>, 54, 149–169. <a href="https://doi.org/10.1016/S0079-6611(02)00047-2" target="_blank" rel="noopener">doi:10.1016/S0079-6611(02)00047-2</a></li>
+        <li>Strub, P. T., &amp; James, C. (2002). The 1997–1998 oceanic El Niño signal along the southeast and northeast Pacific boundaries—an altimetric view. <i>Progress in Oceanography</i>, 54, 439–458. <a href="https://doi.org/10.1016/S0079-6611(02)00063-0" target="_blank" rel="noopener">doi:10.1016/S0079-6611(02)00063-0</a></li>
+        <li>Meyers, S. D., Melsom, A., Mitchum, G. T., &amp; O'Brien, J. J. (1998). Detection of the fast Kelvin wave teleconnection due to El Niño‐Southern Oscillation. <i>Journal of Geophysical Research: Oceans</i>, 103, 27655–27663. <a href="https://doi.org/10.1029/98JC02402" target="_blank" rel="noopener">doi:10.1029/98JC02402</a></li>
+        <li>Frischknecht, M., Münnich, M., &amp; Gruber, N. (2015). Remote versus local influence of ENSO on the California Current System. <i>Journal of Geophysical Research: Oceans</i>, 120, 1353–1374. <a href="https://doi.org/10.1002/2014JC010531" target="_blank" rel="noopener">doi:10.1002/2014JC010531</a>. See also Clarke, A. J., &amp; Van Gorder, S. (1994), <i>J. Phys. Oceanogr.</i>, 24, 661–680, <a href="https://doi.org/10.1175/1520-0485(1994)024%3C0661:OECCAS%3E2.0.CO;2" target="_blank" rel="noopener">doi</a>.</li>
+        <li>NOAA Center for Operational Oceanographic Products and Services (CO-OPS). Tides &amp; Currents data API: monthly means, hourly heights, predictions, datums and flood levels. <a href="https://tidesandcurrents.noaa.gov/" target="_blank" rel="noopener">tidesandcurrents.noaa.gov</a></li>
+        <li>Holgate, S. J., et al. (2013). New data systems and products at the Permanent Service for Mean Sea Level. <i>Journal of Coastal Research</i>, 29, 493–504. <a href="https://doi.org/10.2112/JCOASTRES-D-12-00175.1" target="_blank" rel="noopener">doi:10.2112/JCOASTRES-D-12-00175.1</a>. Data: <a href="https://psmsl.org/" target="_blank" rel="noopener">psmsl.org</a></li>
+        <li>Caldwell, P. C., Merrifield, M. A., &amp; Thompson, P. R. (2015). Sea level measured by tide gauges from global oceans — the Joint Archive for Sea Level holdings (NCEI Accession 0019568). <a href="https://doi.org/10.7289/V5V40S7W" target="_blank" rel="noopener">doi:10.7289/V5V40S7W</a>. Data: University of Hawaii Sea Level Center, research quality and fast delivery.</li>
+        <li>Sweet, W. V., Dusek, G., Obeysekera, J., &amp; Marra, J. J. (2018). Patterns and projections of high tide flooding along the U.S. coastline using a common impact threshold. NOAA Technical Report NOS CO-OPS 086. See also Sweet, W. V., &amp; Park, J. (2014), <i>Earth's Future</i>, 2, 579–600, <a href="https://doi.org/10.1002/2014EF000272" target="_blank" rel="noopener">doi:10.1002/2014EF000272</a>, and Thompson, P. R., et al. (2021), <i>Nature Climate Change</i>, 11, 584–590, <a href="https://doi.org/10.1038/s41558-021-01077-8" target="_blank" rel="noopener">doi:10.1038/s41558-021-01077-8</a>.</li>
+        <li>Gneiting, T., &amp; Raftery, A. E. (2007). Strictly proper scoring rules, prediction, and estimation. <i>Journal of the American Statistical Association</i>, 102, 359–378. <a href="https://doi.org/10.1198/016214506000001437" target="_blank" rel="noopener">doi:10.1198/016214506000001437</a></li>
+        <li>AVISO / CNES. Sea surface height, absolute, 0.25°, monthly composite (1992–2010), served by NOAA CoastWatch West Coast Node (ERDDAP dataset <code>erdTAsshmday</code>). <a href="https://coastwatch.pfeg.noaa.gov/erddap/griddap/erdTAsshmday.html" target="_blank" rel="noopener">coastwatch.pfeg.noaa.gov</a></li>
+        <li>NOAA CoastWatch. Sea surface height anomalies, altimetry (Sentinel‑3A/B, CryoSat‑2, Jason‑2/3, SARAL), near-real-time, global 0.25°, daily (ERDDAP dataset <code>noaacwBLENDEDsshDaily</code>). <a href="https://coastwatch.noaa.gov/erddap/griddap/noaacwBLENDEDsshDaily.html" target="_blank" rel="noopener">coastwatch.noaa.gov</a></li>
+        <li>Background: Bromirski, P. D., Miller, A. J., Flick, R. E., &amp; Auad, G. (2011). Dynamical suppression of sea level rise along the Pacific coast of North America. <i>JGR Oceans</i>, 116, C07005, <a href="https://doi.org/10.1029/2010JC006759" target="_blank" rel="noopener">doi</a>; Hamlington, B. D., et al. (2016). An ongoing shift in Pacific Ocean sea level. <i>JGR Oceans</i>, 121, 5084–5097, <a href="https://doi.org/10.1002/2016JC011815" target="_blank" rel="noopener">doi</a>; Cayan, D. R., et al. (2008). Climate change projections of sea level extremes along the California coast. <i>Climatic Change</i>, 87, 57–73, <a href="https://doi.org/10.1007/s10584-007-9376-7" target="_blank" rel="noopener">doi</a>; Zervas, C. (2009). Sea Level Variations of the United States 1854–2006. NOAA Technical Report NOS CO-OPS 053.</li>
+        <li>Tides: Peng, D., Hill, E. M., Meltzner, A. J., &amp; Switzer, A. D. (2019). Tide gauge records show that the 18.61‐year nodal tidal cycle can change high water levels by up to 30 cm. <i>JGR Oceans</i>, 124, 736–749, <a href="https://doi.org/10.1029/2018JC014695" target="_blank" rel="noopener">doi</a>; Ray, R. D., &amp; Merrifield, M. A. (2019). The semiannual and 4.4‐year modulations of extreme high tides. <i>JGR Oceans</i>, 124, 5907–5922, <a href="https://doi.org/10.1029/2019JC015061" target="_blank" rel="noopener">doi</a>.</li>
+        <li>Other El Niño studies of the California coast: Jacox, M. G., et al. (2016). Impacts of the 2015–2016 El Niño on the California Current System. <i>Geophysical Research Letters</i>, 43, 7072–7080, <a href="https://doi.org/10.1002/2016GL069716" target="_blank" rel="noopener">doi</a>; Barnard, P. L., et al. (2014). Development of the Coastal Storm Modeling System (CoSMoS). <i>Natural Hazards</i>, 74, 1095–1125, <a href="https://doi.org/10.1007/s11069-014-1236-y" target="_blank" rel="noopener">doi</a>.</li>
+        <li>Coastlines: Natural Earth 1:10m and 1:50m land (public domain). <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">naturalearthdata.com</a></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>By Yang Chen and Claude, an AI model made by Anthropic. Source code and data: <a href="https://github.com/ychenzgithub/ScalSeaLevel" target="_blank" rel="noopener">github.com/ychenzgithub/ScalSeaLevel</a>.</p>
+    <p>Built October 26, 2026 from public NOAA, PSMSL and UHSLC data. This is an independent statistical analysis, not an official forecast. For official forecasts and warnings, follow NOAA and the National Weather Service.</p>
+    <p class="small">Charts are interactive: hover or tap a mark for details. Every chart reflects the gauge, measure and El Niño settings in the bar at the top.</p>
+    <p class="small">
+      <span id="busuanzi_container_page_pv" style="display:none">Page views: <b id="busuanzi_value_page_pv"></b></span>
+      <span id="busuanzi_container_site_uv" style="display:none"> · Total visitors: <b id="busuanzi_value_site_uv"></b></span>
+    </p>
+  </div>
+</footer>
+
+<div id="tip" class="tip" role="tooltip" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="data/sl_data.js"></script>
+<script src="data/sl_geo.js"></script>
+<script src="assets/app.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

@@ -8,6 +8,23 @@
 <meta name="author" content="Yang Chen and Claude">
 <link rel="icon" href="data:,">
 <meta name="description" content="How a near-record 2026–27 El Niño could raise sea level and winter high water along the Southern California coast, from every tide-gauge record back to 1906 and the latest NOAA El Niño forecast.">
+<link rel="canonical" href="https://ychenzgithub.github.io/ScalSeaLevel/">
+<!-- Link previews on X, Facebook, LinkedIn, Bluesky, Threads, Reddit and messaging apps -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SoCal El Niño Outlooks">
+<meta property="og:title" content="SoCal El Niño Sea Level Outlook">
+<meta property="og:description" content="A near-record El Niño is building. How high will the sea stand on the Southern California coast? An interactive outlook built from tide-gauge records back to 1906.">
+<meta property="og:url" content="https://ychenzgithub.github.io/ScalSeaLevel/">
+<meta property="og:image" content="https://ychenzgithub.github.io/ScalSeaLevel/assets/social-card.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Title of the page above stripes showing El Niño and La Niña strength each winter since 1906, with San Diego winter sea level drawn on top, and four summary tiles.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SoCal El Niño Sea Level Outlook">
+<meta name="twitter:description" content="A near-record El Niño is building. How high will the sea stand on the Southern California coast? An interactive outlook built from tide-gauge records back to 1906.">
+<meta name="twitter:image" content="https://ychenzgithub.github.io/ScalSeaLevel/assets/social-card.png">
+<meta name="twitter:image:alt" content="Title of the page above stripes showing El Niño and La Niña strength each winter since 1906, with San Diego winter sea level drawn on top, and four summary tiles.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
@@ -136,6 +153,26 @@ abbr[title] { text-decoration: underline dotted; text-underline-offset: 3px; cur
 .tile.fc { border-color: var(--fc); box-shadow: inset 0 0 0 1px var(--fc); }
 .tile.fc .value { color: var(--fc-text); }
 .companion { font-family: var(--font-display); font-size: 0.92rem; color: var(--ink-2); }
+
+/* ---------- share buttons (filled by assets/share.js) ---------- */
+.byrow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
+.share { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 36px; font-family: var(--font-display); }
+.share-lab { font-size: 0.74rem; font-weight: 600; color: var(--muted); letter-spacing: 0.02em; margin-right: 4px; }
+.share a, .share button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  height: 36px; min-width: 36px; padding: 0; border-radius: 999px;
+  border: 1px solid var(--rule); background: var(--surface); color: var(--ink-2);
+  font: 600 0.84rem var(--font-display); text-decoration: none; cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease, background-color 120ms ease;
+}
+.share svg { width: 16px; height: 16px; fill: currentColor; flex: none; }
+.share .pill { padding: 0 14px 0 12px; }
+.share a:hover, .share button:hover { border-color: var(--fc); color: var(--fc-text); text-decoration: none; }
+.share .share-x { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.share .share-x:hover { background: var(--ink-2); border-color: var(--ink-2); color: var(--paper); }
+.share .share-copy.done { border-color: var(--fc); color: var(--fc-text); }
+.share-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+footer .share { margin-bottom: 8px; }
 
 /* ---------- sticky controls ---------- */
 .controls-band {
@@ -329,7 +366,10 @@ footer .wrap { display: grid; gap: 8px; }
     <p class="eyebrow">Southern California coast · Winter 2026–27</p>
     <h1>A near-record El Niño is building. How high will the sea stand on the Southern California coast?</h1>
     <p class="lede">When a strong El Niño takes hold, the ocean along Southern California runs several inches higher than normal for months. That extra height rides on top of every tide, so winter king tides and storm waves reach farther up beaches, harbors and low-lying streets.<span id="lede-now"></span> This page brings together every tide-gauge record we could find for the region, back to 1906, and sets them beside NOAA's October 2026 El Niño forecast.</p>
-    <p class="byline">By <strong>Yang Chen</strong> and <strong>Claude</strong></p>
+    <div class="byrow">
+      <p class="byline">By <strong>Yang Chen</strong> and <strong>Claude</strong></p>
+      <div class="share" data-share="Share"></div>
+    </div>
     <p class="stamp" id="stamp">Tide-gauge data through late October 2026 (October preliminary) · NOAA El Niño outlook issued October 8, 2026</p>
     <figure class="stripes-fig">
       <div id="stripes" class="chart" aria-label="El Niño and La Niña strength each winter since 1906, with winter sea level at the selected gauge drawn on top"></div>
@@ -856,6 +896,7 @@ footer .wrap { display: grid; gap: 8px; }
 
 <footer>
   <div class="wrap">
+    <div class="share" data-share="Share this page"></div>
     <p>By Yang Chen and Claude, an AI model made by Anthropic. Source code and data: <a href="https://github.com/ychenzgithub/ScalSeaLevel" target="_blank" rel="noopener">github.com/ychenzgithub/ScalSeaLevel</a>.</p>
     <p>Built October 26, 2026 from public NOAA, PSMSL and UHSLC data. This is an independent statistical analysis, not an official forecast. For official forecasts and warnings, follow NOAA and the National Weather Service.</p>
     <p class="small">Charts are interactive: hover or tap a mark for details. Every chart reflects the gauge, measure and El Niño settings in the bar at the top.</p>
@@ -872,6 +913,7 @@ footer .wrap { display: grid; gap: 8px; }
 <script src="data/sl_data.js"></script>
 <script src="data/sl_geo.js"></script>
 <script src="assets/app.js"></script>
+<script src="assets/share.js"></script>
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 </body>
 </html>

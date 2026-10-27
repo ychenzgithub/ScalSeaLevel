@@ -44,7 +44,7 @@
   const MEAS_SHORT = { djf: 'Dec–Feb average', ndjfm: 'Nov–Mar average', peak: 'highest month, Oct–Mar', hmax: 'highest water, Nov–Mar' };
 
   const state = {
-    gauge: 'sd', measure: 'djf', period: 'modern', mu: FC.ndj_median, sigma: FC.ndj_sigma, extrap: 'continue',
+    gauge: 'reg', measure: 'djf', period: 'modern', mu: FC.ndj_median, sigma: FC.ndj_sigma, extrap: 'continue',
     units: 'in', alt: 0, altRel: false, hov: '1997', top: 'obs', fall: true,
   };
 
@@ -57,7 +57,7 @@
   const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   const oneIn = (p) => (p < 0.02 ? 'fewer than 1 in 50' : p > 0.5 ? `${pct(p)} of` : `about 1 in ${Math.round(1 / p)}`);
   const ordinal = (n) => { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
-  const gName = (id = state.gauge) => (id === 'reg' ? 'Southern California (average of gauges)' : GAUGE[id].name);
+  const gName = (id = state.gauge) => (id === 'reg' ? 'Southern California (five-gauge average)' : GAUGE[id].name);
   const gAt = (id = state.gauge) => (id === 'reg' ? 'across Southern California' : `at ${GAUGE[id].name}`);
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const OCT_THROUGH = D.so_far.reg ? +D.so_far.reg.through.slice(8) : null;   // last day of preliminary October data
@@ -480,10 +480,10 @@
     }
     $('t-rec-label').textContent = `Highest on record, ${MEAS_SHORT[state.measure]}`;
     $('t-rec').textContent = fmt(st.rec.v);
-    $('t-rec-note').textContent = `${sLabel(st.rec.Y)} at ${gName()}${wlSuffix()}${isWL() ? ', adjusted to today’s sea level' : ', after removing the long-term rise'}. Records since ${sLabel(st.m.y0)}.`;
+    $('t-rec-note').textContent = `${sLabel(st.rec.Y)} ${gAt()}${wlSuffix()}${isWL() ? ', adjusted to today’s sea level' : ', after removing the long-term rise'}. Records since ${sLabel(st.m.y0)}.`;
     $('t-proj-label').textContent = `Projected 2026–27, ${MEAS_SHORT[state.measure]}`;
     $('t-proj').textContent = fmt(st.med);
-    $('t-proj-note').textContent = `Middle estimate for ${gName()}${wlSuffix()}. 8 in 10 range ${fmtBare(st.q10)} to ${fmt(st.q90)}. ${isWL() ? '' : 'Normal is 0.'}`;
+    $('t-proj-note').textContent = `Middle estimate for ${state.gauge === 'reg' ? 'the five-gauge average' : gName()}${wlSuffix()}. 8 in 10 range ${fmtBare(st.q10)} to ${fmt(st.q90)}. ${isWL() ? '' : 'Normal is 0.'}`;
   }
 
   function renderOutlook(st) {
@@ -733,7 +733,7 @@
       if (cls === 'dash') i.style.borderColor = col; else i.style.background = col;
       sp.append(i, document.createTextNode(lab)); leg.append(sp);
     });
-    const alt = kg !== state.gauge ? ` (${gName()} has no tide predictions, so the nearest running gauge is shown)` : '';
+    const alt = kg !== state.gauge ? ` (${state.gauge === 'reg' ? 'the regional average has no tide predictions of its own' : `${gName()} has no tide predictions`}, so ${GAUGE[kg].name} is shown)` : '';
     $('king-title').textContent = `Daily highest tide at ${Gk.name}, November 2026 to March 2027`;
     $('king-intro').textContent = `Tide tables are calculated from the average sea level of 1983–2001. Since then the sea at ${Gk.name} has risen about ${both(off)}, and this winter El Niño is likely to add about ${both(qa.q50)} more (middle estimate for the November–March average). Both ride on top of every high tide in the table.` +
       (octA != null ? ` Monthly sea level changes slowly, so the November and December king tides could see something closer to this October's ${fA(octA)}; the dashed line shows that case.` : '');
@@ -832,7 +832,7 @@
   function renderScatter(st) {
     const el = $('scatter');
     const H = el.clientWidth < 560 ? 320 : 400;
-    const { svg, w, h } = prep('scatter', H, `Winter sea level versus El Niño strength at ${gName()}`);
+    const { svg, w, h } = prep('scatter', H, `Winter sea level versus El Niño strength ${gAt()}`);
     const ml = 48, mr = 14, mt = 22, mb = 40;
     const rows = st.rows, m = st.m;
     const bd = bands();
@@ -961,7 +961,7 @@
     const rows = st.rows;
     const el = $('ts');
     const H = el.clientWidth < 560 ? 230 : 280;
-    const { svg, w, h } = prep('ts', H, `Winter values by year at ${gName()}, with the 2026–27 projection`);
+    const { svg, w, h } = prep('ts', H, `Winter values by year ${gAt()}, with the 2026–27 projection`);
     const ml = 46, mr = 12, mt = 16, mb = 26;
     const c = (v) => conv(v);
     const yrs = d3.range(st.m.y0, st.m.y1 + 1);
@@ -1016,7 +1016,7 @@
     const g = state.gauge;
     const el = $('traj');
     const H = el.clientWidth < 560 ? 300 : 360;
-    const { svg, w, h } = prep('traj', H, `Monthly sea level through past strong El Niños and 2026 at ${gName()}`);
+    const { svg, w, h } = prep('traj', H, `Monthly sea level through past strong El Niños and 2026 ${gAt()}`);
     const ml = 46, mr = 16, mt = 18, mb = 42;
     const n = 18;
     const x = d3.scalePoint().domain(d3.range(n)).range([ml, w - mr]);
@@ -1093,7 +1093,7 @@
       const list = comp.length > 1 ? `${comp.slice(0, -1).join(', ')} and ${comp[comp.length - 1]}` : comp.join('');
       $('event-intro').textContent = `${base} So far 2026 is on the same path: ${gAt(g)}, September 2026 averaged ${fA(s26)} above normal, compared with ${list}` +
         `${oct != null ? `. October 1–${OCT_THROUGH} averaged ${fA(oct)} (preliminary)` : ''}. September 2015 was raised by both the developing El Niño and a marine heat wave off the coast.` +
-        (() => { const pm = pastMax(g, ALLM); return oct != null && pm && oct > pm.v ? ` This October is the highest of any month at this gauge since ${GAUGE[g] ? GAUGE[g].first.slice(0, 4) : '1923'}; the previous monthly record was ${fA(pm.v)}, in ${MONTHS[pm.m - 1]} ${pm.y}.` : ''; })();
+        (() => { const pm = pastMax(g, ALLM); return oct != null && pm && oct > pm.v ? ` This October is the highest of any month ${g === 'reg' ? 'in the regional average' : 'at this gauge'} since ${GAUGE[g] ? GAUGE[g].first.slice(0, 4) : '1923'}; the previous monthly record was ${fA(pm.v)}, in ${MONTHS[pm.m - 1]} ${pm.y}.` : ''; })();
     } else $('event-intro').textContent = `${base} This gauge has no 2026 data; choose a running gauge to compare.`;
     $('traj-title').textContent = `Sea level, month by month, ${gAt(g)}`;
     $('traj-sub').textContent = `Monthly sea level compared with normal, from January of each El Niño year to the following June. Gray: strong El Niños since 1951 (relative index +1.5 °C or more) and 2023–24. The shaded columns are December–February.`;
@@ -1219,7 +1219,7 @@
           ...gs.map((gr) => ({ value: gr.mean[i] == null ? '–' : fA(gr.mean[i]), label: ' ' + gr.lab, color: gr.col }))]);
       })
       .on('pointerleave', () => { cross.style('opacity', 0); hideTip(); });
-    $('monthly-sub').textContent = `${gName()}, ${y0 - 1}–${String(m.y1).slice(2)} and 2026. Average sea level in each month from July to June, grouped by that winter's El Niño–La Niña state (number of winters in parentheses), compared with normal.`;
+    $('monthly-sub').textContent = `${gName()}, July ${y0 - 1} to June ${m.y1}, plus 2026–27 so far. Average sea level in each month from July to June, grouped by that winter's El Niño–La Niña state (number of winters in parentheses), compared with normal.`;
   }
   function renderLag() {
     const g = state.gauge;
@@ -1296,7 +1296,7 @@
     }
     strip('ext1', 'h', `Highest water of the winter (${uW()} above MHHW)`, toW, (v) => (US() ? f2(v) : f0(v)), F.minor);
     strip('ext2', 'days', 'Days at or above the minor flood level', (v) => v, (v) => f1(v));
-    $('ext-sub').textContent = `${P.name}${pid !== state.gauge ? ' (the nearest gauge with a long hourly record)' : ''}, November–March, winters ${periodLabel(m)}, every winter adjusted to today's sea level. Dots are winters; bars and numbers show group averages. NOAA's minor flood level here is ${fW(F.minor)} above MHHW.`;
+    $('ext-sub').textContent = `${P.name}${pid !== state.gauge ? (state.gauge === 'reg' ? ' (the regional average has no hourly record of its own)' : ' (the nearest gauge with a long hourly record)') : ''}, November–March, winters ${periodLabel(m)}, every winter adjusted to today's sea level. Dots are winters; bars and numbers show group averages. NOAA's minor flood level here is ${fW(F.minor)} above MHHW.`;
   }
   function renderTop() {
     const pid = hourlyFor(state.gauge, (g) => !!D.top[g]);
@@ -1333,7 +1333,7 @@
     const nEN = L.filter((e) => (e.x != null ? e.x : e.Y === 2027 ? state.mu : -9) >= 0.5).length;
     const nSummer = L.filter((e) => { const mo = +e.t.slice(5, 7); return mo >= 5 && mo <= 9; }).length;
     $('top-title').textContent = `The 10 highest water levels at ${P.name}`;
-    $('top-sub').textContent = `Hourly water levels since ${P.hourly ? P.hourly[0] : ''}, above MHHW, at least 3 days apart${pid !== state.gauge ? ` (nearest gauge with hourly data to ${gName()})` : ''}. ${nEN} of the 10 came during El Niño years and ${nSummer} on summer king tides. Hover a bar for its parts: the predicted tide, how much higher the sea stood that month than the tide table assumes, and the storm surge of the moment.`;
+    $('top-sub').textContent = `Hourly water levels since ${P.hourly ? P.hourly[0] : ''}, above MHHW, at least 3 days apart${pid !== state.gauge ? ` (at ${P.name}; ${state.gauge === 'reg' ? 'the regional average has no hourly record of its own' : `the nearest gauge with hourly data to ${gName()}`})` : ''}. ${nEN} of the 10 came during El Niño years and ${nSummer} on summer king tides. Hover a bar for its parts: the predicted tide, how much higher the sea stood that month than the tide table assumes, and the storm surge of the moment.`;
   }
 
   // ------------------------------------------------------------------ along the coast: map and Hovmöller
@@ -1501,7 +1501,7 @@
     if (!box) return;
     const short = { reg: 'Regional average', lb: 'Long Beach', en: 'Ensenada, Mexico' };
     const years = (g) => (g.kind === 'active' || g.kind === 'region' ? `since ${g.first.slice(0, 4)}` : `${g.first.slice(0, 4)}–${g.last.slice(0, 4)}`);
-    const groups = [['Running today', ['sd', 'lj', 'la', 'sm', 'sb', 'reg']], ['Past records only', ['nb', 'lb', 'ri', 'ph', 'en']]];
+    const groups = [['Running today', ['reg', 'sd', 'lj', 'la', 'sm', 'sb']], ['Past records only', ['nb', 'lb', 'ri', 'ph', 'en']]];
     for (const [lab, ids] of groups) {
       const grp = document.createElement('div'); grp.className = 'gp-group';
       const h = document.createElement('p'); h.className = 'gp-lab'; h.textContent = lab; grp.append(h);

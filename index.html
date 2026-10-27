@@ -137,6 +137,32 @@ abbr[title] { text-decoration: underline dotted; text-underline-offset: 3px; cur
 .hero { padding-block: 40px 28px; }
 .hero .wrap { display: grid; gap: 22px; }
 .hero .stamp { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); }
+/* title block on the left, tide-gauge picker on the right (stacked on narrow screens) */
+.hero-top { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 22px 40px; align-items: start; }
+.hero-text { display: grid; gap: 22px; min-width: 0; }
+.gauge-pick {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 16px 16px 14px; display: grid; gap: 10px; font-family: var(--font-display); min-width: 0;
+}
+.gp-title { font-size: 1.12rem; font-weight: 760; font-stretch: 104%; }
+.gp-note { font-size: 0.84rem; line-height: 1.4; color: var(--ink-2); }
+#gauge-list { display: grid; gap: 10px; }
+.gp-group { display: grid; gap: 6px; }
+.gp-lab { font: 500 0.7rem var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.gp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
+.gp-btn {
+  display: grid; gap: 1px; align-content: center; text-align: left; min-height: 46px; padding: 6px 10px;
+  border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); color: var(--ink);
+  font-family: var(--font-display); cursor: pointer; transition: border-color 120ms ease, background-color 120ms ease;
+}
+.gp-btn .nm { font-size: 0.9rem; font-weight: 650; line-height: 1.2; }
+.gp-btn .yr { font: 500 0.72rem var(--font-mono); color: var(--muted); }
+.gp-btn:hover { border-color: var(--fc); }
+.gp-btn[aria-pressed="true"] { background: var(--fc-wash); border-color: var(--fc); box-shadow: inset 0 0 0 1px var(--fc); }
+.gp-btn[aria-pressed="true"] .nm { color: var(--fc-text); }
+.gp-btn[aria-pressed="true"] .yr { color: var(--ink-2); }
+.gp-sel { font-size: 0.8rem; line-height: 1.4; color: var(--muted); }
+@media (max-width: 900px) { .hero-top { grid-template-columns: minmax(0, 1fr); } }
 .byline { font-family: var(--font-display); font-size: 1rem; color: var(--ink-2); }
 .byline strong { color: var(--ink); font-weight: 700; }
 .stripes-fig { margin: 6px 0 0; display: grid; gap: 8px; }
@@ -191,6 +217,8 @@ footer .share { margin-bottom: 8px; }
   background-image: linear-gradient(45deg, transparent 50%, var(--ink-2) 50%), linear-gradient(135deg, var(--ink-2) 50%, transparent 50%);
   background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%; background-size: 5px 5px; background-repeat: no-repeat;
 }
+.ctl-gauge label { color: var(--fc-text); font-weight: 700; }
+.ctl-gauge select { border-color: var(--fc); box-shadow: inset 0 0 0 1px var(--fc); font-weight: 700; }
 .range-row { display: flex; align-items: center; gap: 10px; min-height: 36px; }
 .range-row output {
   font: 700 1rem var(--font-display); font-variant-numeric: tabular-nums; color: var(--fc-text);
@@ -363,6 +391,8 @@ footer .wrap { display: grid; gap: 8px; }
 
 <header class="hero">
   <div class="wrap">
+    <div class="hero-top">
+    <div class="hero-text">
     <p class="eyebrow">Southern California coast · Winter 2026–27</p>
     <h1>A near-record El Niño is building. How high will the sea stand on the Southern California coast?</h1>
     <p class="lede">When a strong El Niño takes hold, the ocean along Southern California runs several inches higher than normal for months. That extra height rides on top of every tide, so winter king tides and storm waves reach farther up beaches, harbors and low-lying streets.<span id="lede-now"></span> This page brings together every tide-gauge record we could find for the region, back to 1906, and sets them beside NOAA's October 2026 El Niño forecast.</p>
@@ -371,6 +401,14 @@ footer .wrap { display: grid; gap: 8px; }
       <div class="share" data-share="Share"></div>
     </div>
     <p class="stamp" id="stamp">Tide-gauge data through late October 2026 (October preliminary) · NOAA El Niño outlook issued October 8, 2026</p>
+    </div>
+    <aside class="gauge-pick" aria-labelledby="gp-title">
+      <h2 class="gp-title" id="gp-title">Choose a tide gauge</h2>
+      <p class="gp-note">Every chart and number on this page follows the gauge you pick. You can change it later in the settings bar.</p>
+      <div id="gauge-list"></div>
+      <p class="gp-sel" id="gp-sel" aria-live="polite"></p>
+    </aside>
+    </div>
     <figure class="stripes-fig">
       <div id="stripes" class="chart" aria-label="El Niño and La Niña strength each winter since 1906, with winter sea level at the selected gauge drawn on top"></div>
       <figcaption id="stripes-cap">Each stripe is one winter's El Niño–La Niña state (November–January relative Niño‑3.4 index). Red stripes are El Niño winters and blue stripes are La Niña winters; the last stripe is NOAA's forecast for this winter. The line is winter sea level at the selected gauge, after removing the seasonal cycle and the long-term rise.</figcaption>
@@ -408,7 +446,7 @@ footer .wrap { display: grid; gap: 8px; }
 
 <div class="controls-band">
   <form class="wrap controls" id="controls" aria-label="Chart settings" onsubmit="return false">
-    <div class="ctl">
+    <div class="ctl ctl-gauge">
       <label for="gauge">Tide gauge</label>
       <select id="gauge"></select>
     </div>

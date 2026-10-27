@@ -93,6 +93,8 @@
     return M[per] || M.modern || M.long;
   }
   const hasMeasure = (g, mk) => !!(D.models[g] && D.models[g][mk] && (D.models[g][mk].modern || D.models[g][mk].long));
+  // gauge whose hourly record stands in for the selected one when it has none, or too few winters for the chart
+  const hourlyFor = (g, ok) => (ok(g) ? g : HOURLY_FOR[g] || ACTIVE_FOR[g] || 'sd');
   function bootSets(m, k = 5) {
     if (!m._B) {
       const b = m.boot, B = [];
@@ -794,7 +796,7 @@
       c.on('pointermove', (e) => showTip(e, d.name, [{ value: `${d.first ? d.first.slice(0, 4) : '–'}–${d.last ? d.last.slice(0, 4) : '–'}`, label: ` · ${d.n} months of data` },
         { value: d.src, label: used ? ' · used in this analysis (select to show)' : d.n < 120 ? ' · too short to analyze' : ' · not used' }]))
         .on('pointerleave', hideTip)
-        .on('click', () => { if (used) { state.gauge = used; $('gauge').value = used; checkMeasure(); schedule('all'); } });
+        .on('click', () => { if (used) setGauge(used); });
     });
     const labs = { 9410170: 'San Diego', 9410230: 'La Jolla', 9410660: 'Los Angeles', 9410840: 'Santa Monica', 9411340: 'Santa Barbara', 9410580: 'Newport Beach', 9410680: 'Long Beach', 9411270: 'Rincon Island', 9411406: 'Platform Harvest', 795: 'Ensenada' };
     // label placement: [dx sign (1 right, -1 left), dy in px]
@@ -1241,7 +1243,7 @@
 
   // ------------------------------------------------------------------ timing: extremes
   function renderExtremes() {
-    const pid = HOURLY_FOR[state.gauge] || state.gauge;
+    const pid = hourlyFor(state.gauge, (g) => D.extremes[g] && hasMeasure(g, 'hmax'));
     const E = D.extremes[pid];
     const P = GAUGE[pid];
     if (!E) return;
@@ -1294,10 +1296,10 @@
     }
     strip('ext1', 'h', `Highest water of the winter (${uW()} above MHHW)`, toW, (v) => (US() ? f2(v) : f0(v)), F.minor);
     strip('ext2', 'days', 'Days at or above the minor flood level', (v) => v, (v) => f1(v));
-    $('ext-sub').textContent = `${P.name}${pid !== state.gauge ? ' (nearest gauge with hourly data)' : ''}, November–March, winters ${periodLabel(m)}, every winter adjusted to today's sea level. Dots are winters; bars and numbers show group averages. NOAA's minor flood level here is ${fW(F.minor)} above MHHW.`;
+    $('ext-sub').textContent = `${P.name}${pid !== state.gauge ? ' (the nearest gauge with a long hourly record)' : ''}, November–March, winters ${periodLabel(m)}, every winter adjusted to today's sea level. Dots are winters; bars and numbers show group averages. NOAA's minor flood level here is ${fW(F.minor)} above MHHW.`;
   }
   function renderTop() {
-    const pid = HOURLY_FOR[state.gauge] || state.gauge;
+    const pid = hourlyFor(state.gauge, (g) => !!D.top[g]);
     const T = D.top[pid];
     const P = GAUGE[pid];
     if (!T) return;
@@ -1484,6 +1486,49 @@
     const on = ok && state.fall;   // state.fall keeps the reader's preference when a gauge cannot use it
     [...$('seg-fall').querySelectorAll('button')].forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === (on ? '1' : '0'))));
   }
+  // One place to change the gauge: the picker at the top, the settings-bar menu and the gauge map all call this.
+  function setGauge(id) {
+    if (!GAUGE[id] || !D.models[id]) return;
+    state.gauge = id;
+    $('gauge').value = id;
+    syncGaugeList();
+    checkMeasure();
+    schedule('all');
+  }
+  // The picker at the top of the page lists every gauge by city, with the years it covers.
+  function buildGaugeList() {
+    const box = $('gauge-list');
+    if (!box) return;
+    const short = { reg: 'Regional average', lb: 'Long Beach', en: 'Ensenada, Mexico' };
+    const years = (g) => (g.kind === 'active' || g.kind === 'region' ? `since ${g.first.slice(0, 4)}` : `${g.first.slice(0, 4)}–${g.last.slice(0, 4)}`);
+    const groups = [['Running today', ['sd', 'lj', 'la', 'sm', 'sb', 'reg']], ['Past records only', ['nb', 'lb', 'ri', 'ph', 'en']]];
+    for (const [lab, ids] of groups) {
+      const grp = document.createElement('div'); grp.className = 'gp-group';
+      const h = document.createElement('p'); h.className = 'gp-lab'; h.textContent = lab; grp.append(h);
+      const grid = document.createElement('div'); grid.className = 'gp-grid'; grid.setAttribute('role', 'group'); grid.setAttribute('aria-label', lab);
+      ids.filter((id) => GAUGE[id] && D.models[id]).forEach((id) => {
+        const g = GAUGE[id];
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'gp-btn'; b.dataset.g = id; b.title = g.sub || '';
+        b.innerHTML = `<span class="nm"></span><span class="yr"></span>`;
+        b.querySelector('.nm').textContent = short[id] || g.name;
+        b.querySelector('.yr').textContent = years(g);
+        b.addEventListener('click', () => setGauge(id));
+        grid.append(b);
+      });
+      grp.append(grid);
+      box.append(grp);
+    }
+    syncGaugeList();
+  }
+  function syncGaugeList() {
+    document.querySelectorAll('#gauge-list .gp-btn').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.g === state.gauge)));
+    const g = GAUGE[state.gauge], el = $('gp-sel');
+    if (!el || !g) return;
+    el.textContent = g.kind === 'region' ? `Showing the ${g.sub.charAt(0).toLowerCase() + g.sub.slice(1)}.`
+      : `Showing ${g.name}: ${g.sub.replace(' (retired)', '')}, monthly records ${g.first.slice(0, 4)}–${g.last.slice(0, 4)}.` +
+        (g.kind === 'retired' ? ' This gauge has been retired.' : g.kind === 'mexico' ? ' No later data in this record.' : '');
+  }
   function initControls() {
     const sel = $('gauge');
     const groups = [['Region', ['reg']], ['Running gauges', ['sd', 'lj', 'la', 'sm', 'sb']], ['Retired gauges', ['nb', 'lb', 'ri', 'ph']], ['Baja California', ['en']]];
@@ -1493,7 +1538,8 @@
       sel.append(og);
     }
     sel.value = state.gauge;
-    sel.addEventListener('change', () => { state.gauge = sel.value; checkMeasure(); schedule('all'); });
+    sel.addEventListener('change', () => setGauge(sel.value));
+    buildGaugeList();
     const ms = $('measure');
     Object.keys(D.measures).forEach((k) => { const o = document.createElement('option'); o.value = k; o.textContent = MEAS_OPT[k] || D.measures[k].label; ms.append(o); });
     ms.value = state.measure;

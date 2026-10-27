@@ -13,7 +13,9 @@ URL, OUT = sys.argv[1], sys.argv[2]
 W, H = 1200, 630
 
 CSS = """
-.lede, .byrow, .companion, .toc, .stamp, .controls-band, .stripes-fig figcaption, main, footer { display: none !important; }
+.lede, .byrow, .companion, .toc, .stamp, .gauge-pick, .controls-band, .stripes-fig figcaption, main, footer { display: none !important; }
+.hero-top { display: block !important; }
+.hero-text { gap: 16px !important; }
 .hero .wrap { gap: 16px !important; max-width: none !important; padding-left: 44px !important; padding-right: 44px !important; }
 h1 { font-size: 2.75rem !important; }
 .tile { padding: 12px 14px 14px !important; }
